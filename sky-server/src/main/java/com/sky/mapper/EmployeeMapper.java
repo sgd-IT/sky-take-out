@@ -33,5 +33,7 @@ public interface EmployeeMapper {
      */
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
+    Employee getById(Long id);
+
     void update(Employee employee);
 }
