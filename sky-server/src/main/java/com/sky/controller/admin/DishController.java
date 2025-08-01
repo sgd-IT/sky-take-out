@@ -22,6 +22,7 @@ public class DishController {
 
     /**
      * 新增菜品
+     *
      * @param dishDTO
      * @return
      */
@@ -34,6 +35,7 @@ public class DishController {
 
     /**
      * 分页查询
+     *
      * @param dishPageQueryDTO
      * @return
      */
@@ -46,6 +48,7 @@ public class DishController {
 
     /**
      * 批量删除菜品
+     *
      * @param ids
      * @return
      */
@@ -58,6 +61,7 @@ public class DishController {
 
     /**
      * 根据id查询菜品和对应的口味
+     *
      * @param id
      * @return
      */
@@ -70,13 +74,27 @@ public class DishController {
 
     /**
      * 修改菜品
+     *
      * @param dishDTO
      * @return
      */
     @PutMapping
-    public Result update(@RequestBody DishDTO dishDTO){
+    public Result update(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品：{}", dishDTO);
         dishService.updateWithFlavor(dishDTO);
         return Result.success();
+    }
+
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    public Result<List<DishVO>> list(Long categoryId) {
+        log.info("根据分类id查询菜品：{}", categoryId);
+        List<DishVO> dishList = dishService.getDishByCategoryId(categoryId);
+        return Result.success(dishList);
     }
 }

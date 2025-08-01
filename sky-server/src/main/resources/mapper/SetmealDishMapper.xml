@@ -10,4 +10,12 @@
             #{dishId}
         </foreach>
     </select>
+
+    <!--批量插入套餐和菜品的关联关系-->
+    <insert id="insertBatch" parameterType="com.sky.entity.SetmealDish">
+        insert into setmeal_dish (setmeal_id, dish_id, name, price, copies) values
+        <foreach item="dish" collection="list" separator=",">
+            (#{dish.setmealId}, #{dish.dishId}, #{dish.name}, #{dish.price}, #{dish.copies})
+        </foreach>
+    </insert>
 </mapper>
