@@ -20,8 +20,11 @@ public class RedisConfiguration {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         //设置redis key序列化器
         redisTemplate.setKeySerializer(new StringRedisSerializer());//StringRedisSerializer字符串类型的序列化器
-        //设置redis value序列化器
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+//        //设置redis value序列化器
+//        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+//        // 同时设置 hash 的 key 和 value 序列化器
+//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
     }
 }

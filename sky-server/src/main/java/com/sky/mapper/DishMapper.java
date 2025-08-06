@@ -68,7 +68,7 @@ public interface DishMapper {
      * @param /categoryId
      * @return
      */
-    List<DishVO> getByCategoryId(DishVO dishVO);
+    List<Dish> getByCategoryId(Dish dish);
 
     /**
      * 根据套餐id查询菜品

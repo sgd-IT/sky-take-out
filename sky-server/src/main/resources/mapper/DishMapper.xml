@@ -54,7 +54,7 @@
     </update>
 
     <!--根据分类id查询菜品数据-->
-    <select id="getByCategoryId" resultType="com.sky.vo.DishVO">
+    <select id="getByCategoryId" resultType="com.sky.entity.Dish">
         select * from dish
         <where>
             <if test="categoryId != null">

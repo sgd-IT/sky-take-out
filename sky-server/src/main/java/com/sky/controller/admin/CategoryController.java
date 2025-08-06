@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RequestMapping("/admin/category")
-@RestController
+@RestController("adminCategoryController")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -87,7 +87,7 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/list")
-    public Result<List<Category>> getByType(String type) {
+    public Result<List<Category>> getByType(Integer type) {
         log.info("根据类型查询分类：{}", type);
         List<Category> list = categoryService.getByType(type);
         return Result.success(list);
