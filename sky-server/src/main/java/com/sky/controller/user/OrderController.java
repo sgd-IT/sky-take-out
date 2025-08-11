@@ -1,8 +1,9 @@
 package com.sky.controller.user;
 
-import com.sky.dto.OrdersDTO;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
@@ -13,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController("userOrderController")
 @RequestMapping("/user/order")
@@ -50,4 +50,42 @@ public class OrderController {
         return Result.success(orderPaymentVO);
     }
 
+    /**
+     * 查询订单详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/orderDetail/{id}")
+    public Result<OrderVO> queryOrderDetail(@PathVariable Long id) {
+        OrderVO orderVO = orderService.queryOrderDetail(id);
+        return Result.success(orderVO);
+    }
+
+    /**
+     * 分页查询历史订单
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @GetMapping("/historyOrders")
+    public Result<PageResult> pageHistoryOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageResult pageResult = orderService.pageHistoryOrders(ordersPageQueryDTO);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 取消订单
+     * @param id
+     * @return
+     */
+    @PutMapping("/cancel/{id}")
+    public Result cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrderById(id);
+        return Result.success();
+    }
+
+    @PostMapping("/repetition/{id}")
+    public Result repetitionOrder(@PathVariable Long id) {
+        orderService.repetitionOrder(id);
+        return Result.success();
+    }
 }

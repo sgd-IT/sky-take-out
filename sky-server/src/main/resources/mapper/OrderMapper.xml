@@ -13,7 +13,7 @@
                 #{cancelTime}, #{estimatedDeliveryTime}, #{deliveryStatus}, #{deliveryTime}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
     </insert>
 
-    <!--    根据订单号查询订单数据-->
+    <!--    根据订单id更新订单数据-->
     <update id="update" parameterType="com.sky.entity.Orders">
         update orders
         <set>
@@ -42,6 +42,32 @@
                 delivery_time = #{deliveryTime}
             </if>
         </set>
-        where number = #{number}
+        where id = #{id}
     </update>
+
+    <!--    分页查询历史订单-->
+    <select id="pageHistoryOrders" resultType="com.sky.entity.Orders">
+        select * from orders
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="phone != null">
+                and phone = #{phone}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="beginTime != null">
+                and order_time >= #{beginTime}
+            </if>
+            <if test="endTime != null">
+                AND order_time &lt;= #{endTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by order_time desc
+    </select>
 </mapper>
