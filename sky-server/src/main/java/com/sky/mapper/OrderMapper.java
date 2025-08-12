@@ -6,6 +6,7 @@ import com.sky.entity.Orders;
 import com.sky.vo.OrderStatisticsVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,4 +64,12 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
     List<Orders> getByStatusAndOrderTime(Integer status, LocalDateTime orderTime);
+
+    /**
+     * 用于替换微信支付更新数据库状态的问题
+      * @param orders
+     */
+    @Update("update orders set status = #{status},pay_status = #{payStatus} ,checkout_time = #{checkoutTime} " +
+            "where number = #{number}")
+    void updateStatus(Orders orders);
 }
