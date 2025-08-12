@@ -92,6 +92,12 @@ public interface OrderService {
     void completeOrder(Long id);
 
     /**
+     * 客户催单
+     * @param id
+     */
+    void reminderOrder(Long id);
+
+    /**
      * 支付成功，修改订单状态
      * @param outTradeNo
      */

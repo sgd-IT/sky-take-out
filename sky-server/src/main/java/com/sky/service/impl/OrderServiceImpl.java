@@ -444,6 +444,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 完成订单
+     *
      * @param id
      */
     @Override
@@ -462,7 +463,29 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    /**
+     * 客户催单
+     *
+     * @param id
+     */
+    @Override
+    public void reminderOrder(Long id) {
+        Orders orders = orderMapper.getById(id);
 
+        //判断订单是否存在
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Map map = new HashMap();
+        map.put("orderId", orders.getId());
+        map.put("content", "订单号：" + orders.getNumber());
+        map.put("type", 2);
+        String json = JSON.toJSONString(map);
+
+        //通过webSocket向客户端发送消息
+        webSocketServer.sendToAllClient(json);
+    }
 
 
 }

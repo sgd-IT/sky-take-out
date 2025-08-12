@@ -6,6 +6,7 @@ import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderOverViewVO;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
@@ -83,9 +84,25 @@ public class OrderController {
         return Result.success();
     }
 
+    /**
+     * 再次下单
+     * @param id
+     * @return
+     */
     @PostMapping("/repetition/{id}")
     public Result repetitionOrder(@PathVariable Long id) {
         orderService.repetitionOrder(id);
+        return Result.success();
+    }
+
+    /**
+     * 客户催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    public Result reminderOrder(@PathVariable Long id) {
+        orderService.reminderOrder(id);
         return Result.success();
     }
 }
