@@ -52,4 +52,17 @@
     <select id="getById" resultType="com.sky.entity.Employee">
         select * from employee where id = #{id}
     </select>
+
+    <!--    根据条件统计员工数量-->
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from employee
+        <where>
+            <if test="begin != null">
+                and create_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and create_time &lt; #{end}
+            </if>
+        </where>
+    </select>
 </mapper>

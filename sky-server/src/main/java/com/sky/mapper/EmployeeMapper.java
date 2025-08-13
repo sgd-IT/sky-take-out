@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Map;
+
 @Mapper
 public interface EmployeeMapper {
 
@@ -40,4 +42,12 @@ public interface EmployeeMapper {
 
     @AutoFill(value = OperationType.UPDATE)
     void update(Employee employee);
+
+    /**
+     * 根据条件统计员工数量
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map<String, Object> map);
+
 }
