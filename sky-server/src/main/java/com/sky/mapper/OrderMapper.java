@@ -8,8 +8,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper {
@@ -72,4 +74,10 @@ public interface OrderMapper {
     @Update("update orders set status = #{status},pay_status = #{payStatus} ,checkout_time = #{checkoutTime} " +
             "where number = #{number}")
     void updateStatus(Orders orders);
+
+    /**
+     * 根据动态条件营业额统计
+     * @return
+     */
+    Double sumByMap(Map<String,Object> map);
 }

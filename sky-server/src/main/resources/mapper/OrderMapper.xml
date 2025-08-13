@@ -6,11 +6,15 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into sky_take_out.orders(number, status, user_id, address_book_id, order_time, checkout_time,
                                         pay_method, pay_status, amount, remark, phone, address, user_name, consignee,
-                                        cancel_reason, rejection_reason, cancel_time, estimated_delivery_time, delivery_status,
+                                        cancel_reason, rejection_reason, cancel_time, estimated_delivery_time,
+                                        delivery_status,
                                         delivery_time, pack_amount, tableware_number, tableware_status)
-        values (#{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{checkoutTime}, #{payMethod}, #{payStatus},
-                #{amount}, #{remark}, #{phone}, #{address}, #{userName}, #{consignee}, #{cancelReason}, #{rejectionReason},
-                #{cancelTime}, #{estimatedDeliveryTime}, #{deliveryStatus}, #{deliveryTime}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
+        values (#{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{checkoutTime}, #{payMethod},
+                #{payStatus},
+                #{amount}, #{remark}, #{phone}, #{address}, #{userName}, #{consignee}, #{cancelReason},
+                #{rejectionReason},
+                #{cancelTime}, #{estimatedDeliveryTime}, #{deliveryStatus}, #{deliveryTime}, #{packAmount},
+                #{tablewareNumber}, #{tablewareStatus})
     </insert>
 
     <!--    根据订单id更新订单数据-->
@@ -69,6 +73,22 @@
             </if>
         </where>
         order by order_time desc
+    </select>
+
+    <!--    统计订单数据-->
+    <select id="sumByMap" resultType="java.lang.Double">
+        select sum(amount) from orders
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="begin != null">
+                and order_time &gt;= #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt;= #{end}
+            </if>
+        </where>
     </select>
 
 </mapper>
