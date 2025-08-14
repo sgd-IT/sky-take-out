@@ -23,14 +23,16 @@ public class ReportController {
 
     @Autowired
     private ReportService reportService;
+
     /**
      * 营业额统计
+     *
      * @param begin
      * @param end
      * @return
      */
     @GetMapping("/turnoverStatistics")
-    public Result<TurnoverReportVO> turnoverStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin ,
+    public Result<TurnoverReportVO> turnoverStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
                                                        @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         log.info("营业额统计：{}，{}", begin, end);
         TurnoverReportVO turnoverReportVO = reportService.turnoverStatistics(begin, end);
@@ -39,12 +41,13 @@ public class ReportController {
 
     /**
      * 用户统计
+     *
      * @param begin
      * @param end
      * @return
      */
     @GetMapping("/userStatistics")
-    public Result<UserReportVO> userStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin ,
+    public Result<UserReportVO> userStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
                                                @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         log.info("用户统计：{}，{}", begin, end);
         UserReportVO userReportVO = reportService.userStatistics(begin, end);
@@ -53,15 +56,29 @@ public class ReportController {
 
     /**
      * 订单统计
+     *
      * @param begin
      * @param end
      * @return
      */
-    @GetMapping("/orderStatistics")
-    public Result<OrderReportVO> orderStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin ,
-                                               @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+    @GetMapping("/ordersStatistics")
+    public Result<OrderReportVO> orderStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                                                 @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         log.info("订单统计：{}，{}", begin, end);
         OrderReportVO orderReportVO = reportService.orderStatistics(begin, end);
         return Result.success(orderReportVO);
+    }
+
+    /**
+     * 销量排名
+     *
+     * @return
+     */
+    @GetMapping("/top10")
+    public Result<SalesTop10ReportVO> top10(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        log.info("查询销量排名top10 {} , {}", begin, end);
+        SalesTop10ReportVO top10ReportVO = reportService.getSalesTop10(begin, end);
+        return Result.success(top10ReportVO);
     }
 }
