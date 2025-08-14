@@ -5,6 +5,7 @@ import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.mapper.OrderMapper;
+import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
 import com.sky.vo.SalesTop10ReportVO;
@@ -31,7 +32,7 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
-    private EmployeeMapper employeeMapper;
+    private UserMapper userMapper;
 
     /**
      * 营业额统计
@@ -94,12 +95,12 @@ public class ReportServiceImpl implements ReportService {
             Map<String, Object> map = new HashMap<>();
             map.put("end", endTime);
             //查询date日期对应的总用户数量
-            Integer totalUserCount = employeeMapper.countByMap(map);
+            Integer totalUserCount = userMapper.countByMap(map);
             totalUserCount = totalUserCount == null ? 0 : totalUserCount;
 
             //查询date日期对应新增用户数量
             map.put("begin", beginTime);
-            Integer newUserCount = employeeMapper.countByMap(map);
+            Integer newUserCount = userMapper.countByMap(map);
             newUserCount = newUserCount == null ? 0 : newUserCount;
 
             totalUserList.add(totalUserCount);
