@@ -7,15 +7,20 @@ import com.sky.mapper.EmployeeMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
-import com.sky.vo.OrderReportVO;
-import com.sky.vo.SalesTop10ReportVO;
-import com.sky.vo.TurnoverReportVO;
-import com.sky.vo.UserReportVO;
+import com.sky.service.WorkspaceService;
+import com.sky.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,6 +38,8 @@ public class ReportServiceImpl implements ReportService {
     private OrderMapper orderMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private WorkspaceService workspaceService;
 
     /**
      * 营业额统计
@@ -173,6 +180,7 @@ public class ReportServiceImpl implements ReportService {
 
     /**
      * 销量排名top10
+     *
      * @param begin
      * @param end
      * @return
@@ -212,5 +220,69 @@ public class ReportServiceImpl implements ReportService {
         return dateList;
     }
 
+    /**
+     * 导出运营数据报表到Excel文件并写入HTTP响应流中
+     *
+     * @param response HTTP响应对象，用于将生成的Excel文件输出给客户端
+     */
+    @Override
+    public void export(HttpServletResponse response) {
+        // 查询数据库，获取营业数据 -- 查询最近30天的运营数据
+        LocalDate begin = LocalDate.now().minusDays(30);
+        LocalDate end = LocalDate.now().minusDays(1);
 
+        // 查出概览数据（时间段为过去30天）
+        BusinessDataVO businessData = workspaceService.getBusinessData(
+                LocalDateTime.of(begin, LocalTime.MIN),
+                LocalDateTime.of(end, LocalTime.MAX)
+        );
+
+        // 通过POI写入Excel文件中
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("template/运营数据报表模板.xlsx");
+
+        // 基于模板文件创建一个新的Excel文件
+        try {
+            XSSFWorkbook excel = new XSSFWorkbook(inputStream);
+
+            // 填充概览数据
+            XSSFSheet sheetAt = excel.getSheetAt(0); // 获取第一个sheet
+            sheetAt.getRow(1).getCell(1).setCellValue("时间：" + begin + "至" + end); // 设置时间范围
+
+            // 填充第四行的概览指标
+            XSSFRow row = sheetAt.getRow(3);
+            row.getCell(2).setCellValue(businessData.getTurnover());           // 营业额
+            row.getCell(4).setCellValue(businessData.getOrderCompletionRate()); // 订单完成率
+            row.getCell(6).setCellValue(businessData.getNewUsers());           // 新增用户数
+
+            // 填充第五行的概览指标
+            row = sheetAt.getRow(4);
+            row.getCell(2).setCellValue(businessData.getValidOrderCount());     // 有效订单数
+            row.getCell(4).setCellValue(businessData.getUnitPrice());          // 平均客单价
+
+            // 填充每日明细数据（从第8行开始）
+            for (int i = 0; i < 30; i++) {
+                LocalDate date = begin.plusDays(i);
+                BusinessDataVO data = workspaceService.getBusinessData(LocalDateTime.of(date, LocalTime.MIN), LocalDateTime.of(date, LocalTime.MAX));
+
+                row = sheetAt.getRow(7 + i);
+                row.getCell(1).setCellValue(date.toString());                 // 日期
+                row.getCell(2).setCellValue(data.getTurnover());              // 营业额
+                row.getCell(3).setCellValue(data.getValidOrderCount());       // 有效订单数
+                row.getCell(4).setCellValue(data.getOrderCompletionRate());   // 订单完成率
+                row.getCell(5).setCellValue(data.getNewUsers());              // 新增用户数
+                row.getCell(6).setCellValue(data.getUnitPrice());             // 平均客单价
+            }
+
+            // 将Excel文件写入响应输出流
+            ServletOutputStream outputStream = response.getOutputStream();
+            excel.write(outputStream);
+
+            // 关闭资源
+            outputStream.close();
+            excel.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
